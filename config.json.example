@@ -1,0 +1,22 @@
+{
+	"memory": "./brain.txt"
+	"server": "irc.freenode.net",
+	"port": 6667,
+	"tls": false,
+	"nickname": "TimHortons",
+	"username": "TimHortons",
+	"realname": "Tim Hortons",
+	"nickservpass": "hunter2",
+	"channels": [
+		"#timhortons-test"
+	],
+	"interval": 30,
+	"delay": 3,
+	"chancepool": 25,
+	"linelength": 12,
+	"ignorelist": [
+		"a",
+		"b",
+		"c"
+	]
+}
