@@ -10,7 +10,7 @@ import (
 var config Configuration
 
 type Configuration struct {
-	Memory			 string
+	Memory       string
 	Server       string
 	Port         int
 	TLS          bool
@@ -22,7 +22,7 @@ type Configuration struct {
 	Interval     int64
 	Delay        int
 	ChancePool   int
-	LineLength	 int
+	LineLength   int
 	IgnoreList   []string
 }
 

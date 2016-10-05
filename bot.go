@@ -2,11 +2,11 @@ package main
 
 import (
 	"crypto/tls"
-	"math/rand"
 	"fmt"
-	"time"
-	"strings"
 	irc "github.com/fluffle/goirc/client"
+	"math/rand"
+	"strings"
+	"time"
 )
 
 var client *irc.Conn
@@ -54,7 +54,7 @@ func PrivmsgHandler(conn *irc.Conn, line *irc.Line) {
 	}
 
 	// Make sure it's not still time to stop posting.
-	if time.Now().Unix() < LastTime + config.Interval {
+	if time.Now().Unix() < LastTime+config.Interval {
 		return
 	}
 

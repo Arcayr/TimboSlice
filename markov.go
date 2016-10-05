@@ -3,15 +3,15 @@ package main
 import (
 	"bufio"
 	"log"
-	"strings"
-	"os"
-	"sync"
 	"math/rand"
+	"os"
+	"strings"
+	"sync"
 )
 
 type Markov struct {
-	Chain		map[string][]string
-	Mutex		sync.RWMutex
+	Chain map[string][]string
+	Mutex sync.RWMutex
 }
 
 func NewMarkov() *Markov {
@@ -25,8 +25,8 @@ func (m Markov) AddLine(line string) {
 	// Due to the need to iterate a maximum of (slice length - 2), we use a for
 	// loop instead of a range. If this can be done with range, that'd be great.
 	for i := 0; i < (len(words) - 3); i++ {
-		prefix := strings.Join(words[i:i + 2], " ")
-		suffix := words[i + 2]
+		prefix := strings.Join(words[i:i+2], " ")
+		suffix := words[i+2]
 		m.Chain[prefix] = append(m.Chain[prefix], suffix)
 	}
 }
@@ -62,7 +62,7 @@ func (m Markov) GenerateLine(prefix string, length int) string {
 	var suffix string
 	sentence = append(sentence, strings.Split(prefix, " ")[0], strings.Split(prefix, " ")[1])
 	for i := 0; i < length; i++ {
-		suffix = m.Suffix(strings.Join(sentence[i:i + 2], " "))
+		suffix = m.Suffix(strings.Join(sentence[i:i+2], " "))
 		sentence = append(sentence, suffix)
 	}
 
