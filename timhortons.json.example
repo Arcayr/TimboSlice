@@ -1,0 +1,17 @@
+{
+	"nickname": "TimHortons",
+	"username": "TimHortons",
+	"real_name": "TimHortons",
+	"nickserv_pass": "hunter2",
+	"server_name": "irc.freenode.net",
+	"port": 6697,
+	"tls": true,
+	"channels": ["#timhortonstest"],
+	"ignored": [""],
+	"moderators": [""],
+	"trigger": "Great! Bye now",
+	"posting": false,
+	"chance": 10,
+	"min_gap_seconds": 30,
+	"max_line_length": 20
+}
