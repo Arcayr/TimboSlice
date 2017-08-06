@@ -80,15 +80,15 @@ func (bot *Bot) HandlePrivmsg(conn *irc.Conn, line *irc.Line) {
 	// Only add lines from people who aren't annoying.
 	bot.addLinks(links)
 
-	// Check we're allowed to post
-	if bot.Posting == false {
-		return
-	}
-
-
-	if strings.HasPrefix(strings.ToLower(line.Text()), strings.ToLower(bot.Nickname)) == false { // If he was pinged, override the randomness and delay.
+	// If the bot was pinged, override the randomness and delay. This gets skipped if the line contained the nick.
+	if strings.Contains(strings.ToLower(line.Text()), strings.ToLower(bot.Nickname)) == false {
 		// Check it hasn't been too short a time since the previous post.
 		if bot.LastTime+bot.MinGap >= time.Now().Unix() {
+			return
+		}
+
+		// Check we're allowed to post
+		if bot.Posting == false {
 			return
 		}
 
@@ -96,10 +96,10 @@ func (bot *Bot) HandlePrivmsg(conn *irc.Conn, line *irc.Line) {
 		r := rand.Intn(100)
 		if r > bot.Chance {
 			return
-		}		
+		}
 	}
 
-	// Generate a line.
+	// Fire on all cylinders, we're good to go.
 	generatedLine := bot.generateLine()
 	bot.Conn.Privmsg(line.Target(), generatedLine)
 	bot.LastTime = time.Now().Unix()
