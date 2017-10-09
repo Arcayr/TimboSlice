@@ -116,15 +116,15 @@ func (bot *Bot) handlePrivmsg(conn *irc.Conn, line *irc.Line) {
 	// Only add lines from people who aren't annoying.
 	bot.processLine(line.Text())
 
+	// Check we're allowed to post. Otherwise, quit out.
+		if bot.Posting == false {
+		return
+	}
+
 	// If the bot was pinged, override the randomness and delay. This gets skipped if the line contained the nick.
 	if strings.Contains(strings.ToLower(line.Text()), strings.ToLower(bot.Nickname)) == false {
 		// Check it hasn't been too short a time since the previous post.
 		if bot.LastTime+bot.MinGap >= time.Now().Unix() {
-			return
-		}
-
-		// Check we're allowed to post
-		if bot.Posting == false {
 			return
 		}
 
