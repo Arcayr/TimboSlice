@@ -22,7 +22,7 @@ func (link *Link) Slide() {
 }
 
 func (bot *Bot) dialDB() {
-	connstring := fmt.Sprintf("user=%s dbname=%s password=%s sslmode=Disable", bot.DBUser, bot.DBName, bot.DBPassword)
+	connstring := fmt.Sprintf("postgres://%s:%s@localhost/%s?sslmode=disable", bot.DBUser, bot.DBPassword, bot.DBName)
 	db, err := sql.Open("postgres", connstring)
 	if err != nil {
 		panic(err.Error())
