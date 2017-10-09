@@ -7,6 +7,11 @@
 	"port": 6697,
 	"tls": true,
 	"channels": ["#timhortonstest"],
+	"db_name:" "timhortons",
+	"db_username": "timhortons",
+	"db_password": "",
+	"training": false,
+	"trainfile": "./irc.log"
 	"ignored": [""],
 	"moderators": [""],
 	"trigger": "Great! Bye now",
