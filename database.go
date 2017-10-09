@@ -22,7 +22,7 @@ func (link *Link) Slide() {
 }
 
 func (bot *Bot) dialDB() {
-	connstring := fmt.Sprintf("user=%s dbname=%s password=%s sslmode=disable", bot.DBUser, bot.DBName, bot.DBPassword)
+	connstring := fmt.Sprintf("user=%s dbname=%s password=%s sslmode=Disable", bot.DBUser, bot.DBName, bot.DBPassword)
 	db, err := sql.Open("postgres", connstring)
 	if err != nil {
 		panic(err.Error())
@@ -61,12 +61,6 @@ func (bot *Bot) generateLine() string {
 	}
 
 	return strings.Join(line, " ")
-}
-
-func (bot *Bot) addLinks(links []Link) {
-	for _, link := range links {
-		go bot.addLink(link)
-	}
 }
 
 func (bot *Bot) addLink(link Link) {

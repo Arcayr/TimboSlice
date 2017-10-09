@@ -28,6 +28,8 @@ type Bot struct {
 	DBName        string   `json:"db_name"`
 	DBUser        string   `json:"db_username"`
 	DBPassword    string   `json:"db_password"`
+	Training      bool     `json:"training"`
+	TrainFile     string   `json:"trainfile"`
 	DB            *sql.DB
 	Conn          *irc.Conn
 	LastTime      int64
@@ -40,6 +42,10 @@ func main() {
 	configFilePath := os.Args[1]
 	bot.loadConfiguration(configFilePath)
 	bot.dialDB()
+	if bot.Training {
+		bot.processTrainingFile()
+	}
+
 	bot.dial()
 	bot.run()
 

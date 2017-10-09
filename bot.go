@@ -1,33 +1,16 @@
 package main
 
 import (
+	"bufio"
 	"crypto/tls"
 	"fmt"
 	irc "github.com/fluffle/goirc/client"
 	"log"
 	"math/rand"
+	"os"
 	"strings"
 	"time"
 )
-
-func (bot *Bot) dial() {
-	bot.LastTime = 0
-
-	config := irc.NewConfig(bot.Nickname, bot.Username, bot.RealName)
-	if bot.TLS {
-		config.SSL = true
-		config.SSLConfig = &tls.Config{ServerName: bot.ServerName}
-	}
-
-	config.Server = bot.ServerName
-
-	bot.Conn = irc.Client(config)
-	bot.Conn.EnableStateTracking()
-
-	bot.Conn.HandleFunc(irc.CONNECTED, bot.HandleConnect)
-	bot.Conn.HandleFunc(irc.DISCONNECTED, bot.HandleDisconnect)
-	bot.Conn.HandleFunc(irc.PRIVMSG, bot.HandlePrivmsg)
-}
 
 func (bot *Bot) run() {
 	err := bot.Conn.Connect()
@@ -36,10 +19,11 @@ func (bot *Bot) run() {
 	}
 }
 
-func (bot *Bot) HandleConnect(conn *irc.Conn, line *irc.Line) {
+func (bot *Bot) handleConnect(conn *irc.Conn, line *irc.Line) {
 	ghostMsg := fmt.Sprintf("GHOST %s %s", bot.Nickname, bot.NickservPass)
 	identMsg := fmt.Sprintf("IDENTIFY %s %s", bot.Nickname, bot.NickservPass)
 
+	// Some IRC networks get upset if you flood NICKSERV without a delay.
 	time.Sleep(3 * time.Second)
 	conn.Privmsg("NICKSERV", ghostMsg)
 	time.Sleep(3 * time.Second)
@@ -52,12 +36,64 @@ func (bot *Bot) HandleConnect(conn *irc.Conn, line *irc.Line) {
 	}
 }
 
-func (bot *Bot) HandlePrivmsg(conn *irc.Conn, line *irc.Line) {
-	if line.Public() == false { // Check the PRIVMSG wasn't a query.
+func (bot *Bot) handleDisconnect(conn *irc.Conn, line *irc.Line) {
+	log.Println("Disconnected from server. Retrying...")
+	err := bot.Conn.Connect()
+	if err != nil {
+		log.Println("No dice. Shutting down.")
+	}
+}
+
+func splitLine(line string) []Link {
+	var links []Link
+	words := strings.Fields(line)
+
+	for i := 0; i <= len(words)-3; i++ {
+		prefix := strings.Join(words[i:i+2], " ")
+		suffix := words[i+2]
+
+		link := Link{Prefix: prefix, Suffix: suffix}
+		links = append(links, link)
+	}
+
+	return links
+}
+
+func (bot *Bot) addLinks(links []Link) {
+	for _, link := range links {
+		go bot.addLink(link)
+	}
+}
+
+func (bot *Bot) processLine(line string) {
+	links := splitLine(line)
+	bot.addLinks(links)
+}
+
+func (bot *Bot) processTrainingFile() {
+	file, err := os.Open(bot.TrainFile)
+	if err != nil {
+		log.Println(err.Error())
 		return
 	}
 
-	links := splitLine(line.Text())
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		bot.processLine(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (bot *Bot) handlePrivmsg(conn *irc.Conn, line *irc.Line) {
+	// Check the PRIVMSG wasn't a query.
+	if line.Public() == false {
+		return
+	}
 
 	// Check if the user is annoying. Break out of this if so.
 	for _, nick := range bot.Ignored {
@@ -67,7 +103,7 @@ func (bot *Bot) HandlePrivmsg(conn *irc.Conn, line *irc.Line) {
 	}
 
 	// Check if we're being told to stop posting.
-	if line.Text() == bot.Trigger {
+	if strings.Contains(line.Text(), strings.ToLower(bot.Nickname)) && strings.Contains(line.Text(), strings.ToLower(bot.Trigger)) {
 		for _, nick := range bot.Moderators {
 			if line.Nick == nick {
 				bot.Posting = !bot.Posting
@@ -78,7 +114,7 @@ func (bot *Bot) HandlePrivmsg(conn *irc.Conn, line *irc.Line) {
 	}
 
 	// Only add lines from people who aren't annoying.
-	bot.addLinks(links)
+	bot.processLine(line.Text())
 
 	// If the bot was pinged, override the randomness and delay. This gets skipped if the line contained the nick.
 	if strings.Contains(strings.ToLower(line.Text()), strings.ToLower(bot.Nickname)) == false {
@@ -105,23 +141,21 @@ func (bot *Bot) HandlePrivmsg(conn *irc.Conn, line *irc.Line) {
 	bot.LastTime = time.Now().Unix()
 }
 
-func (bot *Bot) HandleDisconnect(conn *irc.Conn, line *irc.Line) {
-	log.Println("Disconnected from server. Shutting down...")
-	bot.DB.Close()
-	quit <- true
-}
+func (bot *Bot) dial() {
+	bot.LastTime = 0
 
-func splitLine(line string) []Link {
-	var links []Link
-	words := strings.Fields(line)
-
-	for i := 0; i <= len(words)-3; i++ {
-		prefix := strings.Join(words[i:i+2], " ")
-		suffix := words[i+2]
-
-		link := Link{Prefix: prefix, Suffix: suffix}
-		links = append(links, link)
+	config := irc.NewConfig(bot.Nickname, bot.Username, bot.RealName)
+	if bot.TLS {
+		config.SSL = true
+		config.SSLConfig = &tls.Config{ServerName: bot.ServerName}
 	}
 
-	return links
+	config.Server = bot.ServerName
+
+	bot.Conn = irc.Client(config)
+	bot.Conn.EnableStateTracking()
+
+	bot.Conn.HandleFunc(irc.CONNECTED, bot.handleConnect)
+	bot.Conn.HandleFunc(irc.DISCONNECTED, bot.handleDisconnect)
+	bot.Conn.HandleFunc(irc.PRIVMSG, bot.handlePrivmsg)
 }
