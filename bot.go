@@ -136,7 +136,11 @@ func (bot *Bot) handlePrivmsg(conn *irc.Conn, line *irc.Line) {
 	}
 
 	// Fire on all cylinders, we're good to go.
-	generatedLine := bot.generateLine()
+	generatedLine, err := bot.generateLine()
+	if err != nil {
+		log.Printf("Couldn't generate line %s\n", err)
+		return
+	}
 	bot.Conn.Privmsg(line.Target(), generatedLine)
 	bot.LastTime = time.Now().Unix()
 }
