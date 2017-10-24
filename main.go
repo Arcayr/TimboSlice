@@ -7,8 +7,6 @@ import (
 	"sync"
 )
 
-var quit chan (bool)
-
 type Bot struct {
 	Nickname      string   `json:"nickname"`
 	Username      string   `json:"username"`
@@ -49,5 +47,5 @@ func main() {
 	bot.dial()
 	bot.run()
 
-	<-quit
+	select{}
 }
