@@ -40,7 +40,7 @@ func (bot *Bot) generateLine() string {
 	var link Link
 	var line []string
 
-	query, _ := bot.DB.Prepare("SELECT prefix, suffix FROM markov ORDER BY RANDOM()")
+	query, _ := bot.DB.Prepare("SELECT prefix, suffix FROM markov ORDER BY RANDOM() LIMIT 1")
 	query.QueryRow().Scan(&link.Prefix, &link.Suffix)
 	line = append(line, link.Prefix)
 	line = append(line, link.Suffix)
