@@ -36,11 +36,14 @@ func (bot *Bot) dialDB() {
 	bot.DB = db
 }
 
-func (bot *Bot) generateLine() string {
+func (bot *Bot) generateLine() (string, error) {
 	var link Link
 	var line []string
 
-	query, _ := bot.DB.Prepare("SELECT prefix, suffix FROM markov ORDER BY RANDOM() LIMIT 1")
+	query, err := bot.DB.Prepare("SELECT prefix, suffix FROM markov ORDER BY RANDOM() LIMIT 1")
+	if err != nil {
+		return "", err
+	}
 	query.QueryRow().Scan(&link.Prefix, &link.Suffix)
 	line = append(line, link.Prefix)
 	line = append(line, link.Suffix)
@@ -60,7 +63,7 @@ func (bot *Bot) generateLine() string {
 		line = append(line, link.Suffix)
 	}
 
-	return strings.Join(line, " ")
+	return strings.Join(line, " "), nil
 }
 
 func (bot *Bot) addLink(link Link) {
