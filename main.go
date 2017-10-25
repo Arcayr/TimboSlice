@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
-	irc "github.com/fluffle/goirc/client"
-	"os"
 	"sync"
+
+	irc "github.com/fluffle/goirc/client"
 )
 
 type Bot struct {
@@ -37,7 +37,7 @@ type Bot struct {
 func main() {
 	var bot Bot
 
-	configFilePath := os.Args[1]
+	configFilePath := "./timhortons.json"
 	bot.loadConfiguration(configFilePath)
 	bot.dialDB()
 	if bot.Training {
@@ -47,5 +47,5 @@ func main() {
 	bot.dial()
 	bot.run()
 
-	select{}
+	select {}
 }
