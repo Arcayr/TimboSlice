@@ -2,20 +2,18 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 )
 
 func (bot *Bot) loadConfiguration(filepath string) {
-	if filepath == "" {
-		filepath = "./timhortons.json"
-	}
 
 	configFile, err := ioutil.ReadFile(filepath)
 	if err != nil {
+		flag.Usage()
 		log.Fatal(err.Error())
-		panic(err)
 	}
 
 	err = json.Unmarshal(configFile, &bot)
