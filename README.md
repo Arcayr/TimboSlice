@@ -36,6 +36,8 @@ Run from dockerhub:
  
 `docker run --rm --net="host" -v $PWD/timhortons.json:/app/timhortons.json ceruleis/timhortons`
 
+If you wish to train timmy, you'll need to include an additional `-v $PWD/trainfile:/app/trainfile`. Where trainfile is the value for `trainfile:` in `timhortons.json`.
+
 ## Running with docker-compose
 
 Coming soon.
