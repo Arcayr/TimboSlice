@@ -14,9 +14,33 @@ TimHortons the bot is utterly unrelated to Tim Hortons the Canadian fast food re
 
 ## Running
 
-`/path/to/timhortons /path/to/timhortons.json`
+There must exist a valid `timhortons.json` file from the directory which you run TimHortons.
+
+Run: `/path/to/timhortons`
 
 TimHortons requires a PostgreSQL user and database in order to store any chains it collects. The particulars of the username, password, host, and database name can be configured in the supplied `timhortons.json` file.
+
+## Running in Docker
+
+In order to build and run TimHortons in a docker container, run the following:
+
+Build:  `docker build -t tim .`
+
+Assuming you aren't using compose, and your postgresql server is running locally
+
+Run local build:
+
+`docker run --rm --net="host" -v $PWD/timhortons.json:/app/timhortons.json tim` 
+
+Run from dockerhub:
+ 
+`docker run --rm --net="host" -v $PWD/timhortons.json:/app/timhortons.json ceruleis/timhortons`
+
+If you wish to train timmy, you'll need to include an additional `-v $PWD/trainfile:/app/trainfile`. Where trainfile is the value for `trainfile:` in `timhortons.json`.
+
+## Running with docker-compose
+
+Coming soon.
 
 ## License
 
