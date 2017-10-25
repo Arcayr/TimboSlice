@@ -2,10 +2,7 @@ package main
 
 import (
 	"database/sql"
-<<<<<<< HEAD
 	"flag"
-=======
->>>>>>> upstream/master
 	"sync"
 
 	irc "github.com/fluffle/goirc/client"
@@ -41,15 +38,10 @@ type Bot struct {
 func main() {
 	var bot Bot
 
-<<<<<<< HEAD
 	var configFilePath = flag.String("configFilePath", "timhortons.json", "The path to the JSON config file.")
 	flag.Parse()
 
 	bot.loadConfiguration(*configFilePath)
-=======
-	configFilePath := "./timhortons.json"
-	bot.loadConfiguration(configFilePath)
->>>>>>> upstream/master
 	bot.dialDB()
 	if bot.Training {
 		bot.processTrainingFile()
