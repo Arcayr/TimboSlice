@@ -1,0 +1,20 @@
+db_path: "/home/timboslice/timboslice.db"
+irc_nickname: "TimboSlice"
+irc_username: "TimboSlice"
+irc_realname: "Timbo Slice"
+irc_password: "hunter2"
+server_host: "irc.freenode.net"
+server_port: 6697
+server_tls: true
+server_password: null
+channels:
+  - "#timboslice"
+  - "#help"
+ignored:
+  - "Techman"
+moderators:
+  - "Ceruleis"
+chance: 10
+silenced: false
+silence_toggle: "timmy pls"
+min_wait_seconds: 60

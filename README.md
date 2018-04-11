@@ -1,12 +1,10 @@
-# TimHortons
+# TimboSlice
 
-TimHortons is an IRC bot generating sentences of arbitrary length based on the Markov stochastic model, with input fed from the channels in which it resides.
-
-TimHortons the bot is utterly unrelated to Tim Hortons the Canadian fast food restaurant. Despite this, it is still time for Tims.
+TimboSlice is an IRC bot generating sentences of arbitrary length based on the Markov stochastic model, with input fed from the channels in which it resides.
 
 ## Requirements
 
-- PostgreSQL 9.x
+Nil. TimboSlice uses a SQLite backend as it is only one reader/writer at a time.
 
 ## Building
 
@@ -14,34 +12,8 @@ TimHortons the bot is utterly unrelated to Tim Hortons the Canadian fast food re
 
 ## Running
 
-There must exist a valid `timhortons.json` file from the directory which you run TimHortons.
-
-Run: `/path/to/timhortons`
-
-TimHortons requires a PostgreSQL user and database in order to store any chains it collects. The particulars of the username, password, host, and database name can be configured in the supplied `timhortons.json` file.
-
-## Running in Docker
-
-In order to build and run TimHortons in a docker container, run the following:
-
-Build:  `docker build -t tim .`
-
-Assuming you aren't using compose, and your postgresql server is running locally
-
-Run local build:
-
-`docker run --rm --net="host" -v $PWD/timhortons.json:/app/timhortons.json tim` 
-
-Run from dockerhub:
- 
-`docker run --rm --net="host" -v $PWD/timhortons.json:/app/timhortons.json ceruleis/timhortons`
-
-If you wish to train timmy, you'll need to include an additional `-v $PWD/trainfile:/app/trainfile`. Where trainfile is the value for `trainfile:` in `timhortons.json`.
-
-## Running with docker-compose
-
-Coming soon.
+There must exist a valid `timboslice.yml`, `timboslice.json`, or `timboslice.toml` file from the directory which you run the application.
 
 ## License
 
-TimHortons is ISC licensed. See [LICENSE](./LICENSE).
+TimHortons is BSD licensed. See [LICENSE](./LICENSE).
